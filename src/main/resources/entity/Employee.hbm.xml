@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.ssh.domain.Employee" table="employee">
+        <id name="eid" column="eid">
+            <generator class="native"/>
+        </id>
+        <property name="ename" column="ename" length="50"/>
+        <property name="sex" column="sex" length="10"/>
+        <property name="birthday" column="birthday" />
+        <property name="joinDate" column="joinDate"/>
+        <property name="eno" column="eno" length="50"/>
+        <property name="username" column="username" length="50"/>
+        <property name="password" column="password" length="50"/>
+        <many-to-one name="department" class="com.ssh.domain.Department"/>
+    </class>
+</hibernate-mapping>
