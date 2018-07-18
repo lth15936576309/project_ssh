@@ -11,7 +11,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     public Employee login(Employee employee) {
         Employee loginEmployee = employeeDao.findByUsernameAndPassword(employee);
-        return null;
+        return loginEmployee;
     }
 
     public void setEmployeeDao(IEmployeeDao employeeDao) {

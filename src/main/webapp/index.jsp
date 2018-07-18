@@ -30,9 +30,9 @@
         <div class="login_cont">
             <ul class="login">
                 <li class="l_tit">用户名</li>
-                <li class="mb_10"><input type="text" class="login_input user_icon"></li>
+                <li class="mb_10"><input type="text" name="username" class="login_input user_icon"></li>
                 <li class="l_tit">密码</li>
-                <li class="mb_10"><input type="text" class="login_input user_icon"></li>
+                <li class="mb_10"><input type="password" name="password" class="login_input user_icon"></li>
 
                 <li><input type="submit" value="" class="login_btn"></li>
             </ul>
