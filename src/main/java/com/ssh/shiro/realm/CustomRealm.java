@@ -1,5 +1,7 @@
-package com.ssh.test.shiro.realm;
+package com.ssh.shiro.realm;
 
+import com.ssh.dao.IEmployeeDao;
+import com.ssh.domain.Employee;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -14,6 +16,8 @@ import org.apache.shiro.util.ByteSource;
 import java.util.Set;
 
 public class CustomRealm extends AuthorizingRealm {
+
+    private IEmployeeDao employeeDao;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
@@ -35,7 +39,7 @@ public class CustomRealm extends AuthorizingRealm {
             return null;
         }
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(username, password, this.getName());
-        authenticationInfo.setCredentialsSalt(ByteSource.Util.bytes(username));
+        //authenticationInfo.setCredentialsSalt(ByteSource.Util.bytes(username));
         return authenticationInfo;
     }
 
@@ -45,6 +49,12 @@ public class CustomRealm extends AuthorizingRealm {
      * @return
      */
     private String getPasswordByUsername(String username) {
+        Employee employee = new Employee();
+        employee.setUsername(username);
+        Employee loginEmployee = employeeDao.findByUsername(employee);
+        if(loginEmployee != null) {
+            return loginEmployee.getPassword();
+        }
         return null;
     }
 
@@ -66,4 +76,11 @@ public class CustomRealm extends AuthorizingRealm {
         return null;
     }
 
+    public IEmployeeDao getEmployeeDao() {
+        return employeeDao;
+    }
+
+    public void setEmployeeDao(IEmployeeDao employeeDao) {
+        this.employeeDao = employeeDao;
+    }
 }

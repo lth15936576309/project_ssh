@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/context
@@ -9,7 +11,9 @@
 	http://www.springframework.org/schema/aop
 	http://www.springframework.org/schema/aop/spring-aop.xsd
 	http://www.springframework.org/schema/tx
-	http://www.springframework.org/schema/tx/spring-tx.xsd">
+	http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <context:component-scan base-package="com.ssh"/>
 
     <bean id="employeeAction" class="com.ssh.action.EmployeeAction" scope="prototype">
         <property name="employeeService" ref="employeeService"/>
@@ -19,6 +23,38 @@
     </bean>
     <bean id="employeeDao" class="com.ssh.dao.impl.EmployeeDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!-- shiro过滤器 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="index.jsp"/>
+        <property name="unauthorizedUrl" value="index.jsp"/>
+        <property name="filterChainDefinitions">
+            <value>
+                /index.jsp = anon
+                /employee_login.action = anon
+                /* = authc
+            </value>
+        </property>
+        <property name="filters">
+            <util:map>
+                <entry key="rolesOr" value-ref="authorityFilter"/>
+            </util:map>
+        </property>
+    </bean>
+    <!--创建SecurityManager对象-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="customRealm"/>
+    </bean>
+    <bean id="customRealm" class="com.ssh.shiro.realm.CustomRealm">
+        <property name="employeeDao" ref="employeeDao"/>
+        <property name="credentialsMatcher" ref="credentialsMatcher"/>
+    </bean>
+    <!--shiro加密-->
+    <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher" id="credentialsMatcher">
+        <property name="hashAlgorithmName" value="md5"/>
+        <property name="hashIterations" value="1"/>
     </bean>
 
     <!-- 引入属性文件 -->
@@ -56,4 +92,9 @@
     </bean>
     <!--开启注解事物-->
     <tx:annotation-driven/>
+    <!--<aop:aspectj-autoproxy proxy-target-class="true"/>
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>-->
 </beans>
