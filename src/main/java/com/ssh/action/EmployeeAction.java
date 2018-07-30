@@ -8,6 +8,7 @@ import com.ssh.service.IEmployeeService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class EmployeeAction extends ActionSupport implements ModelDriven<Employe
         UsernamePasswordToken token = new UsernamePasswordToken(employee.getUsername(), employee.getPassword());
         try {
             subject.login(token);
-            subject.logout();
+            Session session = subject.getSession(true);
             return SUCCESS;
         } catch (AuthenticationException e) {
             logger.info(e.getMessage());

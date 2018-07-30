@@ -46,10 +46,14 @@
     <!--创建SecurityManager对象-->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="customRealm"/>
+        <property name="sessionManager" ref="sessionManager"/>
     </bean>
     <bean id="customRealm" class="com.ssh.shiro.realm.CustomRealm">
         <property name="employeeDao" ref="employeeDao"/>
         <property name="credentialsMatcher" ref="credentialsMatcher"/>
+    </bean>
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="sessionDAO" ref="redisSessionDao"/>
     </bean>
     <!--shiro加密-->
     <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher" id="credentialsMatcher">
